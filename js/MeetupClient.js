@@ -12,13 +12,13 @@
     // 	}
     // })
 
-    var meetupView = Backbone.View.extend({
+    var MeetupView = Backbone.View.extend({
 
         tagname: "div",
         className: "meetups",
         initialize: function(opts) { //this opts is from the bottom where we call new meetupView(data); (line 80)
 
-            console.log(opts);
+            //console.log(opts);
 
             this.options = _.extend( //extend here takes the brand new object on line 11, and places line 13 in it, as well as line 15
                 {}, {
@@ -26,36 +26,35 @@
                 },
                 opts
             );
-            console.log(this.options);
+            //console.log(this.options);
             this.options.$container.append(this.el);
 
             this.render();
         },
 
-        //template: "<h3>{name}</h3><hr><h6>{description}</h6>",
-        template: "<h3>{name}</h3><hr><p>{description}</p>",
+        template: "<div class='table'><h3>{name}</h3><hr><p>{description}</p></div>",
         render: function() {
-        	console.log(this.model.attributes);
+        	//console.log(this.model.attributes);
             this.el.innerHTML = _.template(this.template, this.model.attributes);
         }
-    })
+    });
 
     var meetupListing = Backbone.Model.extend({
 
         initialize: function(opts) {
-            this.view = new meetupView({
+            this.view = new MeetupView({
                 model: this
             });
         }
     });
 
-    var meetupAllListings = Backbone.Collection.extend({
+    var MeetupAllListings = Backbone.Collection.extend({
         
         createInputObject: function() {
             var input = {};
             $(':input').each(function() {
                 input[this.name] = this.value;
-            })
+            });
             console.log(input);
             return input;
         },
@@ -76,7 +75,7 @@
                 "&order=members&key=",
                 this.apikey,
                 "&callback=?"
-            ].join('')
+            ].join('');
         },
         
         parse: function(data) {
@@ -84,7 +83,7 @@
         }
     });
 
-    var listings = new meetupAllListings();
+    //var listings = new meetupAllListings();
 
     // dont fetch until input submit is triggered
     // listings.fetch().then(function(collection) {
@@ -102,7 +101,7 @@
         // };
 
         // this.view = new formView({ el: document.querySelector('.myForm') });
-        this.meetupCollection = new meetupAllListings();
+        this.meetupCollection = new MeetupAllListings();
 
         this.Routing();
     }
@@ -162,7 +161,7 @@
 
             // self.makeRequest();
             self.meetupCollection.fetch();
-        })
+        });
 
         Path.root("#/");
         Path.listen();

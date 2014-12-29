@@ -10,7 +10,8 @@
             {url: "./bower_components/lodash/dist/lodash.min.js"},
             {url: "./bower_components/backbone/backbone.js"},
             {url: "./bower_components/pathjs/path.min.js"},
-            {url: "./js/MeetupClient.js"}
+            {url: "./js/MeetupClient.js"},
+            {url: "./dist/style.css"}
         ).then(function(){
             _.templateSettings.interpolate = /{([\s\S]+?)}/g;
 
