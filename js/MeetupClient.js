@@ -1,22 +1,12 @@
-(function(window, undefined) { //why do you wrap the entire thing in this?
-    "use strict";
+(function(window, undefined) { //serves 2 functions: 1) allows undefined to really be undefined and cannot be manipulated by giving it a new value
+    "use strict";               //and 2) window is defined here for performance reasons. JS first checks local variables and when not found, switches to global.calling it here locally speeds it up
 
-    // var formView = Backbone.View.extend({
-    // 	events: {
-    // 		"click .button": "searchMeetup"
-    // 	},
-    // 	searchMeetup: function(event){
-    // 		event.preventDefault();
-    // 		// tell collection to fetch()
-    // 		// collection.fetch()
-    // 	}
-    // })
 
     var MeetupView = Backbone.View.extend({
 
         tagname: "div",
         className: "meetups",
-        initialize: function(opts) { //this opts is from the bottom where we call new meetupView(data); (line 80)
+        initialize: function(opts) {
 
             //console.log(opts);
 
@@ -33,6 +23,7 @@
         },
 
         template: "<div class='table'><h3>{name}</h3><hr><p>{description}</p></div>",
+        
         render: function() {
         	//console.log(this.model.attributes);
             this.el.innerHTML = _.template(this.template, this.model.attributes);
@@ -50,10 +41,10 @@
 
     var MeetupAllListings = Backbone.Collection.extend({
         
-        createInputObject: function() {
-            var input = {};
-            $(':input').each(function() {
-                input[this.name] = this.value;
+        createInputObject: function() {     //here i create an input object that takes in both the zip code and area of interest, and
+            var input = {};                 //places it beneath, in the URL function
+            $(':input').each(function() {   //finds all inputs via jQuery method, and for each input it finds, take that value and 
+                input[this.name] = this.value;  //place into the empty object called "input"
             });
             console.log(input);
             return input;
@@ -83,83 +74,21 @@
         }
     });
 
-    //var listings = new meetupAllListings();
-
-    // dont fetch until input submit is triggered
-    // listings.fetch().then(function(collection) {
-    //     console.log(collection);
-    //     // return collection;
-    // })
-
-
-
 
     function MeetupClient(options) {
 
-        // this.options = {
-        //     apikey: "284b6a257c7c73785101a423976502c"
-        // };
+        this.meetupCollection = new MeetupAllListings();  //Starting point of program. Calling an instance of the collection.
 
-        // this.view = new formView({ el: document.querySelector('.myForm') });
-        this.meetupCollection = new MeetupAllListings();
-
-        this.Routing();
+        this.Routing();  //also calling the function "routing", below.
     }
 
-    // MeetupClient.prototype.queryAPI = function(){
-
-    // 	var input = this.createInputObject();
-
-    // 	var url = [ "http://api.meetup.com/2/groups.json/",
-    // 				"?zip=",
-    // 				//zipcode,
-    // 				input.zipcode,
-    // 				"&topic=",
-    // 				//search_term,
-    // 				input.group,
-    // 				"&order=members&key=",
-    // 				this.options.apikey,
-    // 				"&callback=?" 
-
-    // 				];
-
-    // 	return $.getJSON(url.join('')).then(function(data){
-    // 		//console.log(data);
-    // 		return data;
-    // 	});
-
-    // };
-
-    // MeetupClient.prototype.makeRequest = function(){
-
-    // 	$.when(this.queryAPI()
-    // 		).then(function(data){
-
-    // 			console.log(data);
-
-    // 			arguments[0].results.forEach(function(data){
-    // 				new meetupView(data);
-    // 			})
-
-    // 		});
-    // };
-
-    // MeetupClient.prototype.init = function(){
-
-    // 	var self = this;
-
-    // 		self.makeRequest();
-
-
-    // };
 
     MeetupClient.prototype.Routing = function() {
 
         var self = this;
 
-        Path.map("#/results").to(function() {
+        Path.map("#/results").to(function() {    //when a user clicks submit on the page, it triggers the fetch of the collection (line 80)
 
-            // self.makeRequest();
             self.meetupCollection.fetch();
         });
 
@@ -172,18 +101,6 @@
     window.MeetupClient = MeetupClient;
 
 })(window, undefined);
-
-// MeetupClient.prototype.getGeo = function(){
-
-// 	var promise = $.Deferred();
-
-// 	navigator.geolocation.getCurrentPosition(function(){
-// 		promise.resolve(arguments[0]);
-// 	});
-
-// 	console.log(promise);
-// 	return promise;
-// };
 
 
 
